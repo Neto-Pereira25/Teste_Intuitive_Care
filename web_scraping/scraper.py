@@ -52,7 +52,16 @@ def dowload_pdf():
     except Exception as e:
         print(e)
 
-
+def compress_pdfs():
+    """ Compacta os PDFs baixados em um único arquivo .zip """
+    try:
+        with zipfile.ZipFile(ZIP_FILE, 'w') as zip_file:
+            for file in os.listdir(DOWNLOAD_FOLDER):
+                zip_file.write(os.path.join(DOWNLOAD_FOLDER, file), file)
+        print(f'Arquivos compactados em {ZIP_FILE}')
+    except Exception as e:
+        print(e)
 
 if __name__ == '__main__':
     dowload_pdf()
+    compress_pdfs()
