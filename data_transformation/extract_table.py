@@ -25,4 +25,19 @@ def extract_table(pdf_path):
         print(e)
 
 
-    
+def process_table(df):
+    """ Converte a tabela extraída para um DataFrame e aplica transformações. """
+
+    try:
+        df.columns = df.columns.str.replace('\r', ' ').str.replace('\n', ' ')
+        df = df.apply(lambda col: col.str.replace('\r', ' ').str.replace('\n', ' ') if col.dtype == 'object' else col)
+
+        df.rename(columns=SUBSTITUTIONS, inplace=True)
+
+        # for col in df.columns:
+        #     df[col] = df[col].replace(SUBSTITUTIONS, regex=True)
+        
+        return df
+    except Exception as e:
+        print(e)
+
