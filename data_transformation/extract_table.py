@@ -15,7 +15,6 @@ SUBSTITUTIONS = {
 
 def extract_table(pdf_path):
     """ Extrai a tabela do PDF e retorna como um DataFrame do Pandas. """
-
     try:
         table_list = tabula.read_pdf(pdf_path, pages='3', multiple_tables=True)
 
@@ -27,7 +26,6 @@ def extract_table(pdf_path):
 
 def process_table(df):
     """ Converte a tabela extraída para um DataFrame e aplica transformações. """
-
     try:
         df.columns = df.columns.str.replace('\r', ' ').str.replace('\n', ' ')
         df = df.apply(lambda col: col.str.replace('\r', ' ').str.replace('\n', ' ') if col.dtype == 'object' else col)
@@ -43,9 +41,8 @@ def process_table(df):
 
 def save_csv(df, csv_path):
     """ Salva o DataFrame em um arquivo CSV. """
-    # versão do pandas
-    
     try:
+        # versão do pandas
         df.to_csv(csv_path, index=False, encoding="utf-8")
         # with open(csv_path, mode='w', newline='', encoding='utf-8') as file:
         #     writer = csv.writer(file)
@@ -60,7 +57,14 @@ def save_csv(df, csv_path):
     except Exception as e:
         print(e)
 
-
+def compact_csv_file(csv_path, zip_path):
+    """ Compacta o arquivo CSV gerado em um arquivo ZIP. """
+    try:
+        with zipfile.ZipFile(zip_path, 'w') as zipf:
+            zipf.write(csv_path, os.path.basename(csv_path))
+        print(f"Arquivo ZIP salvo em {zip_path}")
+    except Exception as e:
+        print(e)
 
 if __name__ == '__main__':
     if not os.path.exists(PDF_FILE):
@@ -69,4 +73,4 @@ if __name__ == '__main__':
         tables = extract_table(PDF_FILE)
         df = process_table(tables)
         save_csv(df, CSV_FILE)
-        
+        compact_csv_file(CSV_FILE, ZIP_FILE)
