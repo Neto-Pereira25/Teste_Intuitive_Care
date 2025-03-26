@@ -41,3 +41,32 @@ def process_table(df):
     except Exception as e:
         print(e)
 
+def save_csv(df, csv_path):
+    """ Salva o DataFrame em um arquivo CSV. """
+    # versão do pandas
+    
+    try:
+        df.to_csv(csv_path, index=False, encoding="utf-8")
+        # with open(csv_path, mode='w', newline='', encoding='utf-8') as file:
+        #     writer = csv.writer(file)
+
+        #     writer.writerow(df.columns)
+
+        #     for row in df.values:
+        #         writer.writerow(row)
+
+        print(f"CSV salvo em {csv_path}")
+        return
+    except Exception as e:
+        print(e)
+
+
+
+if __name__ == '__main__':
+    if not os.path.exists(PDF_FILE):
+        print(f'Arquivo PDF "{PDF_FILE}" não encontrado. Execute o scraper primeiro.')
+    else:
+        tables = extract_table(PDF_FILE)
+        df = process_table(tables)
+        save_csv(df, CSV_FILE)
+        
