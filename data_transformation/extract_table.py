@@ -16,7 +16,7 @@ SUBSTITUTIONS = {
 def extract_table(pdf_path):
     """ Extrai a tabela do PDF e retorna como um DataFrame do Pandas. """
     try:
-        table_list = tabula.read_pdf(pdf_path, pages='3', multiple_tables=True)
+        table_list = tabula.read_pdf(pdf_path, pages='3-181', multiple_tables=True)
 
         df = pd.concat(table_list, sort=False, ignore_index=True)
         return df
