@@ -14,7 +14,7 @@ ZIP_FILE = 'web_scraping/anexos.zip'
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
 def dowload_pdf():
-    """ Baixando os PDFs Anexo I e II da página da ANS. """
+    ''' Baixando os PDFs Anexo I e II da página da ANS. '''
     try:
         response = requests.get(URL_ANS)
 
@@ -22,14 +22,14 @@ def dowload_pdf():
             print('Erro ao acessar a página')
             print(response)
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text, 'html.parser')
         links = soup.find_all('a', href=True)
 
         pdf_links = []
 
         for link in links:
             href = link['href']
-            if "Anexo_I" in href or "Anexo_II" in href:
+            if 'Anexo_I' in href or 'Anexo_II' in href:
                 pdf_links.append(href)
         
         if not pdf_links:
@@ -53,7 +53,7 @@ def dowload_pdf():
         print(e)
 
 def compress_pdfs():
-    """ Compacta os PDFs baixados em um único arquivo .zip """
+    ''' Compacta os PDFs baixados em um único arquivo .zip '''
     try:
         with zipfile.ZipFile(ZIP_FILE, 'w') as zip_file:
             for file in os.listdir(DOWNLOAD_FOLDER):

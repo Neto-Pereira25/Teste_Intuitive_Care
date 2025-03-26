@@ -3,18 +3,18 @@ import tabula
 import pandas as pd
 import zipfile
 
-DOWNLOAD_FOLDER = "data_files"
-PDF_FILE = os.path.join(DOWNLOAD_FOLDER, "Anexo_I_Rol_2021RN_465.2021_RN627L.2024.pdf")  # Nome do arquivo pode variar
-CSV_FILE = "data_files/rol_de_procedimentos.csv"
-ZIP_FILE = "data_files/Teste_JOSE_PEREIRA_DA_SILVA_NETO.zip"
+DOWNLOAD_FOLDER = 'data_files'
+PDF_FILE = os.path.join(DOWNLOAD_FOLDER, 'Anexo_I_Rol_2021RN_465.2021_RN627L.2024.pdf')  # Nome do arquivo pode variar
+CSV_FILE = 'data_files/rol_de_procedimentos.csv'
+ZIP_FILE = 'data_files/Teste_JOSE_PEREIRA_DA_SILVA_NETO.zip'
 
 SUBSTITUTIONS = {
-    "OD": "Seg. Odontológica",
-    "AMB": "Seg. Ambulatorial"
+    'OD': 'Seg. Odontológica',
+    'AMB': 'Seg. Ambulatorial'
 }
 
 def extract_table(pdf_path):
-    """ Extrai a tabela do PDF e retorna como um DataFrame do Pandas. """
+    ''' Extrai a tabela do PDF e retorna como um DataFrame do Pandas. '''
     try:
         table_list = tabula.read_pdf(pdf_path, pages='3-181', multiple_tables=True)
 
@@ -25,7 +25,7 @@ def extract_table(pdf_path):
 
 
 def process_table(df):
-    """ Converte a tabela extraída para um DataFrame e aplica transformações. """
+    ''' Converte a tabela extraída para um DataFrame e aplica transformações. '''
     try:
         df.columns = df.columns.str.replace('\r', ' ').str.replace('\n', ' ')
         df = df.apply(lambda col: col.str.replace('\r', ' ').str.replace('\n', ' ') if col.dtype == 'object' else col)
@@ -40,10 +40,10 @@ def process_table(df):
         print(e)
 
 def save_csv(df, csv_path):
-    """ Salva o DataFrame em um arquivo CSV. """
+    ''' Salva o DataFrame em um arquivo CSV. '''
     try:
         # versão do pandas
-        df.to_csv(csv_path, index=False, encoding="utf-8")
+        df.to_csv(csv_path, index=False, encoding='utf-8')
         # with open(csv_path, mode='w', newline='', encoding='utf-8') as file:
         #     writer = csv.writer(file)
 
@@ -52,17 +52,17 @@ def save_csv(df, csv_path):
         #     for row in df.values:
         #         writer.writerow(row)
 
-        print(f"CSV salvo em {csv_path}")
+        print(f'CSV salvo em {csv_path}')
         return
     except Exception as e:
         print(e)
 
 def compact_csv_file(csv_path, zip_path):
-    """ Compacta o arquivo CSV gerado em um arquivo ZIP. """
+    ''' Compacta o arquivo CSV gerado em um arquivo ZIP. '''
     try:
         with zipfile.ZipFile(zip_path, 'w') as zipf:
             zipf.write(csv_path, os.path.basename(csv_path))
-        print(f"Arquivo ZIP salvo em {zip_path}")
+        print(f'Arquivo ZIP salvo em {zip_path}')
     except Exception as e:
         print(e)
 
