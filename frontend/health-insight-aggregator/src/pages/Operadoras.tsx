@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, InputGroup, Card, Spinner } from 'react-bootstrap';
-import { Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Filter, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Operadora } from '../types/operadoras';
 import OperadoraCard from '../components/operadoras/OperadoraCard';
 import OperadoraDetails from '../components/operadoras/OperadoraDetails';
 import OperadoraFilter from '../components/operadoras/OperadoraFilter';
 import { filterOperadoras, getModalidades, getOperadoras } from '../services/operadorasService';
+import { Link } from 'react-router-dom';
 
 const OperadoraList = () => {
     const [operadoras, setOperadoras] = useState<Operadora[]>([]);
@@ -163,7 +164,18 @@ const OperadoraList = () => {
 
     return (
         <Container className='py-4'>
-            <h2 className='mb-4'>Operadoras de Saúde</h2>
+            <header className='border-bottom mb-4'>
+                <Container>
+                    <div className='d-flex align-items-center justify-content-between py-3'>
+                        <Link to='/' className='d-flex align-items-center gap-2 text-decoration-none text-muted'>
+                            <ArrowLeft size={16} />
+                            <span>Voltar</span>
+                        </Link>
+                        <h1 className='h4 fw-semibold m-0'>Operadoras de Saúde</h1>
+                        <div style={{ width: '5rem' }}></div> {/* Spacer para centralizar o título */}
+                    </div>
+                </Container>
+            </header>
 
             <div className='mb-4'>
                 <Row>
@@ -281,6 +293,14 @@ const OperadoraList = () => {
                     onClose={handleCloseDetails}
                 />
             )}
+
+            <footer className="border-top mt-4">
+                <Container>
+                    <div className="py-3 text-center text-muted small">
+                        Sistema de Consulta de Operadoras de Saúde &copy; {new Date().getFullYear()}
+                    </div>
+                </Container>
+            </footer>
         </Container>
     );
 };
