@@ -1,54 +1,73 @@
-# React + TypeScript + Vite
+# 📌Projeto: Sistema de Consulta ANS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sistema web para consulta de operadoras de saúde registradas na Agência Nacional de Saúde Suplementar (ANS).
 
-Currently, two official plugins are available:
+## 📖 Sobre o Projeto
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Este projeto foi desenvolvido para facilitar a consulta de informações de operadoras de saúde registradas na ANS. O sistema permite a visualização de dados detalhados sobre cada operadora, com filtros por modalidade, estado, cidade e nome.
 
-## Expanding the ESLint configuration
+## 🎯 Funcionalidades
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Listagem de Operadoras**: Visualização em formato de cartões com informações básicas.
+- **Filtros Avançados**: Possibilidade de filtrar por modalidade, UF, cidade e termo de busca.
+- **Detalhes da Operadora**: Visualização de informações detalhadas sobre cada operadora.
+- **Paginação**: Navegação entre páginas de resultados.
+- **Indicadores de Carregamento**: Feedback visual durante o carregamento de dados.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🚀 Tecnologias Utilizadas
+
+- React
+- TypeScript
+- React Bootstrap
+- React Router
+- React Toastify
+- React Query (TanStack Query)
+
+## ▶️ Como Executar o Projeto
+
+```sh
+# Clone o repositório
+git clone git@github.com:Neto-Pereira25/Teste_Intuitive_Care.git
+
+# Entre no diretório do projeto
+cd Teste_Intuitive_Care\frontend\health-insight-aggregator
+
+# Instale as dependências
+npm install
+
+# Inicie o servidor de desenvolvimento
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+O projeto estará disponível em `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📂 Estrutura do Projeto
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
 ```
+📂 src/
+    ├── 📂 components/
+    │   └── 📂 operadoras/
+    │           ├── OperadoraCard.tsx         # Componente de cartão de operadora
+    │           ├── OperadoraDetails.tsx      # Componente de detalhes da operadora
+    │           ├── OperadoraFilter.tsx       # Componente de filtros
+    │           └── OperadoraList.tsx         # Componente de listagem de operadoras
+    ├── 📂 pages/
+    │       ├── Index.tsx                     # Página inicial
+    │       ├── NotFound.tsx                  # Página de acesso a rotas inválidas
+    │       └── Operadoras.tsx                # Página de listagem de operadoras
+    ├── 📂 services/
+    │       └── operadoraService.ts           # Serviço para comunicação com a API
+    └── 📂 types/
+            └── operadora.ts                  # Tipos relacionados às operadoras
+```
+
+## 📌 Contribuindo
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Faça commit das suas alterações (`git commit -m 'feat: Adiciona nova feature'`)
+4. Faça push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
+
+---
+📌 *Feito com 💙 por [José Neto](https://github.com/Neto-Pereira25)*
