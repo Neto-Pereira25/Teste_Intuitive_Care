@@ -2,23 +2,25 @@ import os
 import requests
 import zipfile
 import pandas as pd
+import datetime
 
+CURRENT_YEAR = datetime.datetime.now().year
 DOWNLOAD_FOLDER = 'data_files/database_files'
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
 URLS = {
     'operadoras_ativas': 'https://dadosabertos.ans.gov.br/FTP/PDA/operadoras_de_plano_de_saude_ativas/Relatorio_cadop.csv',
-    'demonstrativos_2023': [
-        'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/2023/1T2023.zip',
-        'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/2023/2T2023.zip',
-        'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/2023/3T2023.zip',
-        'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/2023/4T2023.zip',
+    f'demonstrativos_{CURRENT_YEAR - 2}': [
+        f'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/{CURRENT_YEAR - 2}/1T{CURRENT_YEAR - 2}.zip',
+        f'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/{CURRENT_YEAR - 2}/2T{CURRENT_YEAR - 2}.zip',
+        f'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/{CURRENT_YEAR - 2}/3T{CURRENT_YEAR - 2}.zip',
+        f'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/{CURRENT_YEAR - 2}/4T{CURRENT_YEAR - 2}.zip',
     ],
-    'demonstrativos_2024': [
-        'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/2024/1T2024.zip',
-        'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/2024/2T2024.zip',
-        'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/2024/3T2024.zip',
-        'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/2024/4T2024.zip',
+    f'demonstrativos_{CURRENT_YEAR - 1}': [
+        f'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/{CURRENT_YEAR - 1}/1T{CURRENT_YEAR - 1}.zip',
+        f'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/{CURRENT_YEAR - 1}/2T{CURRENT_YEAR - 1}.zip',
+        f'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/{CURRENT_YEAR - 1}/3T{CURRENT_YEAR - 1}.zip',
+        f'https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/{CURRENT_YEAR - 1}/4T{CURRENT_YEAR - 1}.zip',
     ]
 }
 
@@ -66,7 +68,6 @@ def verify_csv_file(path_csv, rows=5):
             df['VL_SALDO_FINAL'] = df['VL_SALDO_FINAL'].astype(str).str.replace(',', '.')
         
         if 'Telefone' in df.columns:
-            print('Birigui')
             df['Telefone'] = df['Telefone'].apply(lambda x: str(x)[:20])
             
         
@@ -79,7 +80,6 @@ if __name__ == '__main__':
     print()
     # Baixar todos os arquivos
     for name, url in URLS.items():
-
         if isinstance(url, list):
             for i, sub_url in enumerate(url):
                 path_destination = os.path.join(DOWNLOAD_FOLDER, f'{name}_{i+1}T.zip')
