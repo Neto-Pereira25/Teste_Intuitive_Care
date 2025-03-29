@@ -22,7 +22,8 @@ const OperadoraList = () => {
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(9);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [itemsPerPage, setItemsPerPage] = useState(6);
     const [paginatedOperadoras, setPaginatedOperadoras] = useState<Operadora[]>([]);
 
     useEffect(() => {
@@ -45,7 +46,6 @@ const OperadoraList = () => {
     }, [itemsPerPage]);
 
     useEffect(() => {
-        // Update paginated data when operadoras or pagination settings change
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         setPaginatedOperadoras(operadoras.slice(startIndex, endIndex));
@@ -115,6 +115,7 @@ const OperadoraList = () => {
         const maxVisiblePages = 5;
 
         let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        // eslint-disable-next-line prefer-const
         let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
         if (endPage - startPage + 1 < maxVisiblePages) {
