@@ -31,9 +31,6 @@ def process_table(df):
         df = df.apply(lambda col: col.str.replace('\r', ' ').str.replace('\n', ' ') if col.dtype == 'object' else col)
 
         df.rename(columns=SUBSTITUTIONS, inplace=True)
-
-        # for col in df.columns:
-        #     df[col] = df[col].replace(SUBSTITUTIONS, regex=True)
         
         return df
     except Exception as e:
@@ -42,16 +39,8 @@ def process_table(df):
 def save_csv(df, csv_path):
     ''' Salva o DataFrame em um arquivo CSV. '''
     try:
-        # versão do pandas
         df.to_csv(csv_path, index=False, encoding='utf-8')
-        # with open(csv_path, mode='w', newline='', encoding='utf-8') as file:
-        #     writer = csv.writer(file)
-
-        #     writer.writerow(df.columns)
-
-        #     for row in df.values:
-        #         writer.writerow(row)
-
+        
         print(f'CSV salvo em {csv_path}')
         return
     except Exception as e:
