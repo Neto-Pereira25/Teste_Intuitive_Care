@@ -90,14 +90,14 @@ if __name__ == '__main__':
     
     # Extrair arquivos ZIP
     for name in [
-        'demonstrativos_2023_1T', 
-        'demonstrativos_2023_2T', 
-        'demonstrativos_2023_3T', 
-        'demonstrativos_2023_4T', 
-        'demonstrativos_2024_1T',
-        'demonstrativos_2024_2T',
-        'demonstrativos_2024_3T',
-        'demonstrativos_2024_4T'
+        f'demonstrativos_{CURRENT_YEAR - 2}_1T', 
+        f'demonstrativos_{CURRENT_YEAR - 2}_2T', 
+        f'demonstrativos_{CURRENT_YEAR - 2}_3T', 
+        f'demonstrativos_{CURRENT_YEAR - 2}_4T', 
+        f'demonstrativos_{CURRENT_YEAR - 1}_1T',
+        f'demonstrativos_{CURRENT_YEAR - 1}_2T',
+        f'demonstrativos_{CURRENT_YEAR - 1}_3T',
+        f'demonstrativos_{CURRENT_YEAR - 1}_4T'
         ]:
         zip_path = os.path.join(DOWNLOAD_FOLDER, f'{name}.zip')
         print(zip_path)
