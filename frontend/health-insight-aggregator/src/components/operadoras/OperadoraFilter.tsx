@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Offcanvas, Form, Button } from 'react-bootstrap';
 
 interface OperadoraFilterProps {
@@ -7,6 +6,10 @@ interface OperadoraFilterProps {
     modalidades: string[];
     modalidade: string;
     setModalidade: (value: string) => void;
+    uf: string;
+    setUf: (value: string) => void;
+    cidade: string;
+    setCidade: (value: string) => void;
     applyFilters: () => void;
 }
 
@@ -17,6 +20,10 @@ const OperadoraFilter = ({
     modalidades,
     modalidade,
     setModalidade,
+    uf,
+    setUf,
+    cidade,
+    setCidade,
     applyFilters
 }: OperadoraFilterProps) => {
     // Lista de UFs brasileiras
@@ -24,12 +31,6 @@ const OperadoraFilter = ({
         'Todos', 'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
         'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
     ];
-
-    const regioes = ['Todas', 'Norte', 'Nordeste', 'Centro-Oeste', 'Sudeste', 'Sul'];
-
-    const [uf, setUf] = useState('Todos');
-    const [regiao, setRegiao] = useState('Todas');
-    const [cidade, setCidade] = useState('');
 
     // Função para aplicar os filtros e fechar o modal
     const handleApplyFilters = () => {
@@ -41,7 +42,6 @@ const OperadoraFilter = ({
     const handleClearFilters = () => {
         setModalidade('Todas');
         setUf('Todos');
-        setRegiao('Todas');
         setCidade('');
     };
 
@@ -73,18 +73,6 @@ const OperadoraFilter = ({
                         >
                             {ufs.map((estado) => (
                                 <option key={estado} value={estado}>{estado}</option>
-                            ))}
-                        </Form.Select>
-                    </Form.Group>
-
-                    <Form.Group className='mb-3'>
-                        <Form.Label>Região</Form.Label>
-                        <Form.Select
-                            value={regiao}
-                            onChange={(e) => setRegiao(e.target.value)}
-                        >
-                            {regioes.map((reg) => (
-                                <option key={reg} value={reg}>{reg}</option>
                             ))}
                         </Form.Select>
                     </Form.Group>

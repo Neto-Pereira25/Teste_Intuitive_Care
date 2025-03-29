@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button, InputGroup, Card } from 'react-bootstrap';
-import { Search, Filter } from 'lucide-react';
+import { Container, Row, Col, Form, Button, InputGroup, Card, Spinner } from 'react-bootstrap';
+import { Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Operadora } from '../../types/operadoras';
 import OperadoraCard from './OperadoraCard';
 import OperadoraDetails from './OperadoraDetails';
 import OperadoraFilter from './OperadoraFilter';
-import { filtrarOperadoras, getModalidades, getOperadoras } from '../../services/operadorasService';
+import { filterOperadoras, getModalidades, getOperadoras } from '../../services/operadorasService';
 
 const OperadoraList = () => {
     const [operadoras, setOperadoras] = useState<Operadora[]>([]);
@@ -16,13 +16,19 @@ const OperadoraList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [modalidade, setModalidade] = useState('Todas');
     const [modalidades, setModalidades] = useState<string[]>(['Todas']);
+    const [uf, setUf] = useState('Todos');
+    const [cidade, setCidade] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(9);
+    const [paginatedOperadoras, setPaginatedOperadoras] = useState<Operadora[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await getOperadoras();
                 setOperadoras(data);
-                setModalidades(getModalidades());
+                setModalidades(await getModalidades());
             } catch (error) {
                 toast.error('Erro ao carregar dados: Não foi possível carregar a lista de operadoras.');
                 console.error('Erro ao buscar operadoras:', error);
@@ -32,16 +38,26 @@ const OperadoraList = () => {
         };
 
         fetchData();
-    }, []);
+    }, [itemsPerPage]);
+
+    useEffect(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        setPaginatedOperadoras(operadoras.slice(startIndex, endIndex));
+    }, [operadoras, currentPage, itemsPerPage]);
 
     const handleSearch = async () => {
         setLoading(true);
         try {
-            const filteredData = await filtrarOperadoras({
+            const filteredData = await filterOperadoras({
                 termo: searchTerm,
-                modalidade
+                modalidade,
+                uf,
+                cidade
             });
             setOperadoras(filteredData);
+            setTotalPages(Math.ceil(filteredData.length / itemsPerPage));
+            setCurrentPage(1)
         } catch (error) {
             toast.error('Erro ao filtrar: Não foi possível aplicar os filtros.');
             console.error('Erro ao filtrar operadoras:', error);
@@ -61,14 +77,18 @@ const OperadoraList = () => {
     const handleResetFilters = async () => {
         setSearchTerm('');
         setModalidade('Todas');
+        setUf('Todos');
+        setCidade('')
         setLoading(true);
 
         try {
             const data = await getOperadoras();
             setOperadoras(data);
+            setTotalPages(Math.ceil(data.length / itemsPerPage));
+            setCurrentPage(1);
         } catch (error) {
+            console.error(error);
             toast.error('Erro ao redefinir: Não foi possível redefinir os filtros.');
-            console.error(`Erro ao redefinir: ${error}`);
         } finally {
             setLoading(false);
         }
@@ -78,6 +98,65 @@ const OperadoraList = () => {
         await handleSearch();
         setFilterOpen(false);
     };
+
+    const goToPage = (page: number) => {
+        if (page < 1 || page > totalPages) return;
+        setCurrentPage(page);
+    };
+
+    const renderPaginationItems = () => {
+        const items = [];
+        const maxVisiblePages = 5;
+
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        if (startPage > 1) {
+            items.push(
+                <li key='start' className='page-item'>
+                    <Button variant='light' className='page-link' onClick={() => goToPage(1)}>1</Button>
+                </li>
+            );
+            if (startPage > 2) {
+                items.push(<li key='ellipsis1' className='page-item disabled'><span className='page-link'>...</span></li>);
+            }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            items.push(
+                <li key={i} className={`page-item ${currentPage === i ? 'active' : ''}`}>
+                    <Button
+                        variant={currentPage === i ? 'primary' : 'light'}
+                        className='page-link'
+                        onClick={() => goToPage(i)}
+                    >
+                        {i}
+                    </Button>
+                </li>
+            );
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                items.push(
+                    <li key='ellipsis2' className='page-item disabled'>
+                        <span className='page-link'>...</span>
+                    </li>
+                );
+            }
+            items.push(
+                <li key='end' className='page-item'>
+                    <Button variant='light' className='page-link' onClick={() => goToPage(totalPages)}>{totalPages}</Button>
+                </li>
+            );
+        }
+
+        return items;
+    }
 
     return (
         <Container className='py-4'>
@@ -111,6 +190,13 @@ const OperadoraList = () => {
                 </Row>
             </div>
 
+            {loading && (
+                <div className='text-center py-5'>
+                    <Spinner animation='border' variant='primary' role='status' className='mb-2' />
+                    <p className='text-muted'>Carregando operadoras...</p>
+                </div>
+            )}
+
             {operadoras.length === 0 && !loading ? (
                 <Card className='text-center p-5 bg-light'>
                     <Card.Body>
@@ -123,34 +209,49 @@ const OperadoraList = () => {
                         </Button>
                     </Card.Body>
                 </Card>
-            ) : (
-                <Row xs={1} md={2} lg={3} className='g-4'>
-                    {loading ? (
-                        // Placeholders de carregamento
-                        Array.from({ length: 6 }).map((_, index) => (
-                            <Col key={index}>
-                                <Card className='h-100 opacity-25'>
-                                    <Card.Body>
-                                        <div className='bg-secondary h-4 w-75 mb-2 rounded'></div>
-                                        <div className='bg-secondary h-3 w-50 mb-4 rounded'></div>
-                                        <div className='bg-secondary h-2 w-100 mb-2 rounded'></div>
-                                        <div className='bg-secondary h-2 w-100 mb-2 rounded'></div>
-                                        <div className='bg-secondary h-2 w-100 mb-2 rounded'></div>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        ))
-                    ) : (
-                        operadoras.map((operadora) => (
+            ) : !loading && (
+                <>
+                    <Row xs={1} md={2} lg={3} className="g-4">
+                        {paginatedOperadoras.map((operadora) => (
                             <Col key={operadora.registro_ANS}>
                                 <OperadoraCard
                                     operadora={operadora}
                                     onClick={handleOpenDetails}
                                 />
                             </Col>
-                        ))
+                        ))}
+                    </Row>
+
+                    {totalPages > 1 && (
+                        <nav aria-label="Navegação de páginas" className="mt-4">
+                            <ul className="pagination justify-content-center">
+                                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                    <Button
+                                        variant="light"
+                                        className="page-link"
+                                        onClick={() => goToPage(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                    >
+                                        <ChevronLeft size={16} /> Anterior
+                                    </Button>
+                                </li>
+
+                                {renderPaginationItems()}
+
+                                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                                    <Button
+                                        variant="light"
+                                        className="page-link"
+                                        onClick={() => goToPage(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                    >
+                                        Próxima <ChevronRight size={16} />
+                                    </Button>
+                                </li>
+                            </ul>
+                        </nav>
                     )}
-                </Row>
+                </>
             )}
 
             {/* Filtro lateral */}
@@ -161,6 +262,10 @@ const OperadoraList = () => {
                 applyFilters={applyFilters}
                 modalidade={modalidade}
                 setModalidade={setModalidade}
+                uf={uf}
+                setUf={setUf}
+                cidade={cidade}
+                setCidade={setCidade}
             />
 
             {/* Modal de detalhes */}

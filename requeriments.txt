@@ -1,0 +1,7 @@
+psycopg2-binary==2.9.10
+fastapi==0.115.7
+uvicorn==0.32.1
+beautifulsoup4==4.13.3
+pandas==2.2.3
+requests==2.32.3
+tabula-py==2.10.0
