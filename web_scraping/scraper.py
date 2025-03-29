@@ -19,8 +19,7 @@ def dowload_pdf():
         response = requests.get(URL_ANS)
 
         if response.status_code != 200:
-            print('Erro ao acessar a página')
-            print(response)
+            raise Exception(f"Erro ao baixar o PDF. Status Code: {response.status_code}")
 
         soup = BeautifulSoup(response.text, 'html.parser')
         links = soup.find_all('a', href=True)
@@ -61,6 +60,7 @@ def compress_pdfs():
         print(f'Arquivos compactados em {ZIP_FILE}')
     except Exception as e:
         print(e)
+
 
 if __name__ == '__main__':
     dowload_pdf()
